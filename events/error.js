@@ -2,6 +2,6 @@
 
 const hub = require('./hub');
 
-hub.on('error', (err) => {
+module.exports = (hub.on('error', (err) => {
   console.log('Something went wrong!!', err);
-});
+}));
