@@ -4,6 +4,7 @@ const fs = require('fs');
 const hub = require('./events/hub');
 require('./events/error');
 require('./events/completion');
+require('./events/network-logger');
 
 const alterFile = async (file) => {
   await fs.readFile( file, async (err, data) => {
@@ -12,6 +13,7 @@ const alterFile = async (file) => {
     await fs.writeFile( file, Buffer.from(text), (err) => {
       if(err) { hub.emit('error', err); }
       hub.emit('completion', file);
+      hub.emit('save', file);
     });
   });
 };
