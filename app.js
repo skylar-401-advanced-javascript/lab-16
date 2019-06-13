@@ -5,11 +5,11 @@ const hub = require('./events/hub');
 require('./events/error');
 require('./events/completion');
 
-const alterFile = (file) => {
-  fs.readFile( file, (err, data) => {
+const alterFile = async (file) => {
+  await fs.readFile( file, async (err, data) => {
     if(err) { hub.emit('error', err); }
     let text = data.toString().toUpperCase();
-    fs.writeFile( file, Buffer.from(text), (err) => {
+    await fs.writeFile( file, Buffer.from(text), (err) => {
       if(err) { hub.emit('error', err); }
       hub.emit('completion', file);
     });
