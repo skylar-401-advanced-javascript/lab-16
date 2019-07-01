@@ -1,38 +1,26 @@
 'use strict';
 
-const net = require('net');
-const uuid = require('uuid');
+const ioFactory = require('socket.io');
+const io = ioFactory(3000);
 
-const PORT = process.env.PORT || 3001;
-const server = net.createServer();
-
-server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
-  
 let socketPool = {};
 
-server.on('connection', socket => {
-  let id = uuid();
-  socket.id = id;
-  socketPool[id] = socket;
+io.on('connection', socket => {
+  console.log('Connected', socket.id);
+});
 
-  console.log(`Connection count: ${Object.keys(socketPool).length}`);
+io.on('error', err => {
+  io.broadcast.emit('file-error', err);
+});
 
-  for (let socketId in socketPool) {
-    if (socketId === id) continue;
+io.on('save', data => {
+  io.broadcast.emit('file-save', data);
+  dataHandler();
+});
 
-    socketPool[socketId].write(`${id} connected!\r\n`);
-  }
-
-  socket.on('error', err => {
-    console.error(id, err);
-  });
-  socket.on('data', dataHandler);
-  socket.on('close', () => {
-    console.log(id, 'closing!');
-    delete socketPool[id];
-  });
+io.on('close', socket => {
+  console.log(socket.id, 'closing!');
+  delete socketPool[socket.id];
 });
 
 function dataHandler(buffer) {

@@ -6,11 +6,11 @@ require('./events/error');
 require('./events/completion');
 require('./events/network-logger');
 
-const alterFile = async (file) => {
-  await fs.readFile( file, async (err, data) => {
+const alterFile = (file) => {
+  fs.readFile( file, (err, data) => {
     if(err) { hub.emit('error', err); }
     let text = data.toString().toUpperCase();
-    await fs.writeFile( file, Buffer.from(text), (err) => {
+    fs.writeFile( file, Buffer.from(text), (err) => {
       if(err) { hub.emit('error', err); }
       hub.emit('completion', file);
       hub.emit('save', file);
