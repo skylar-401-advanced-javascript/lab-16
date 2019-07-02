@@ -1,10 +1,13 @@
 'use strict';
-const fs = require('fs');
 
 const io = require('socket.io-client');
-io.connect('http://localhost:3000');
+const socket = io.connect('http://localhost:3000');
 
 const eventHub = require('./hub');
+eventHub.on('completion', () => {
+  console.log('Closing socket...');
+  socket.close();
+});
 
 initializeLogger();
 
@@ -14,12 +17,8 @@ function initializeLogger() {
 
   function log(eventType) {
     return payload => {
-      let json = JSON.stringify({
-        eventType, payload,
-      });
-      fs.writeFile('../test.txt',`${json}\r\n`, (err) => {
-        if(err) throw err;
-      });
+      console.log('socket emit', eventType);
+      socket.emit(eventType, payload);
     };
   }
 }

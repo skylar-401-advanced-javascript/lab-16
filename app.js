@@ -8,12 +8,15 @@ require('./events/network-logger');
 
 const alterFile = (file) => {
   fs.readFile( file, (err, data) => {
-    if(err) { hub.emit('error', err); }
+    if(err) { return hub.emit('error', err); }
+
     let text = data.toString().toUpperCase();
     fs.writeFile( file, Buffer.from(text), (err) => {
-      if(err) { hub.emit('error', err); }
-      hub.emit('completion', file);
+      if(err) { return hub.emit('error', err); }
+
       hub.emit('save', file);
+
+      hub.emit('completion', file);
     });
   });
 };
