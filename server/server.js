@@ -3,8 +3,6 @@
 const ioFactory = require('socket.io');
 const io = ioFactory(3000);
 
-let socketPool = {};
-
 io.on('connection', socket => {
   console.log('Connected', socket.id);
 
