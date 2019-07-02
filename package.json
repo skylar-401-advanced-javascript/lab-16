@@ -7,6 +7,9 @@
     "test": "jest --verbose --coverage",
     "lint": "eslint ."
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
